@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LouvePlan — Planeje o louvor da sua igreja</title>
+  <meta name="description" content="Escala, repertório, músicas e membros no mesmo lugar. O time chega no culto sabendo o que vai tocar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="assets/logo.png?v=6" type="image/png" />
+  <link rel="stylesheet" href="css/styles.css?v=4" />
+</head>
+<body>
+  <div class="glow"></div>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#topo">
+        <img class="logo" src="assets/logo.png?v=6" alt="" width="36" height="36" />
+        LouvePlan
+      </a>
+      <nav class="nav-links">
+        <a href="#semana">A semana</a>
+        <a href="#funcoes">O app</a>
+        <a href="#como">Como funciona</a>
+        <a href="#comecar">Começar</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="store-icon" href="#download" aria-label="Baixar na App Store" title="App Store">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.9-2.3c.7-1.2 1-2.3 1-2.4-.1 0-2.3-.9-2.3-3.9zm-2.1-6.2c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.8-.9 2.8 1.1.1 2.1-.6 2.7-1.4z"/></svg>
+        </a>
+        <a class="store-icon" href="#download" aria-label="Disponível no Google Play" title="Google Play">
+          <svg class="play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#34A853" d="M12.4 12.3 2 22.4c.2.4.6.7 1.1.8l11.4-11z"/><path fill="#4285F4" d="M21.1 10.3 17.3 8.1 12.4 12.3 17.3 16.5l3.8-2.2c1.2-.7 1.2-2.3 0-3z"/><path fill="#FBBC04" d="M2 1.6v20.8c0 .2 0 .4.1.6L12.4 12.3 2 1.6z"/><path fill="#EA4335" d="M12.4 12.3 2.1 1.6C2.4 1.1 3 .9 3.6 1.2l13.7 7.9z"/></svg>
+        </a>
+        <a class="btn btn-primary" href="#comecar">Começar</a>
+        <button class="burger" id="burger" aria-label="Abrir menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-panel" id="menu">
+    <a href="#semana">A semana</a>
+    <a href="#funcoes">O app</a>
+    <a href="#como">Como funciona</a>
+    <a href="#comecar">Começar</a>
+  </div>
+
+  <main id="topo">
+    <section class="wrap hero">
+      <div>
+        <p class="kicker"><i></i> Para o ministério de louvor</p>
+        <h1>O culto não começa no palco. <em>Começa no plano.</em></h1>
+        <p class="lede">Escala, repertório, músicas e confirmação no mesmo lugar. Quem vai tocar já sabe o tom, o ensaio e o horário.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#comecar">Começar grátis</a>
+          <a class="btn btn-ghost" href="#semana">Ver a semana do louvor</a>
+        </div>
+        <div class="stores" id="download">
+          <a class="store" href="#download" aria-label="Baixar na App Store">
+            <svg class="store-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.9-2.3c.7-1.2 1-2.3 1-2.4-.1 0-2.3-.9-2.3-3.9zm-2.1-6.2c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.8-.9 2.8 1.1.1 2.1-.6 2.7-1.4z"/></svg>
+            <span><small>Baixar na</small><b>App Store</b></span>
+          </a>
+          <a class="store" href="#download" aria-label="Disponível no Google Play">
+            <svg class="store-ico play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#34A853" d="M12.4 12.3 2 22.4c.2.4.6.7 1.1.8l11.4-11z"/><path fill="#4285F4" d="M21.1 10.3 17.3 8.1 12.4 12.3 17.3 16.5l3.8-2.2c1.2-.7 1.2-2.3 0-3z"/><path fill="#FBBC04" d="M2 1.6v20.8c0 .2 0 .4.1.6L12.4 12.3 2 1.6z"/><path fill="#EA4335" d="M12.4 12.3 2.1 1.6C2.4 1.1 3 .9 3.6 1.2l13.7 7.9z"/></svg>
+            <span><small>Disponível no</small><b>Google Play</b></span>
+          </a>
+        </div>
+
+        <div class="roles">
+          <span class="chip">Líder de louvor</span>
+          <span class="chip">Vocal</span>
+          <span class="chip">Instrumentistas</span>
+          <span class="chip">Técnicos</span>
+        </div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone phone-back" aria-hidden="true">
+          <img src="assets/app-evento.png" alt="" />
+        </div>
+        <div class="phone phone-front">
+          <img src="assets/app-painel.png" alt="Painel real do LouvePlan: Ensaio, Músicas, Escalas, Repertórios e Membros" />
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap strip">
+      <span><b>Um app.</b> toda a operação do ministério.</span>
+      <span><b>Escala + setlist</b> no mesmo evento.</span>
+      <span><b>RSVP</b> pra ninguém chegar no escuro.</span>
+    </div>
+
+    <section class="wrap section" id="semana">
+      <p class="eyebrow">Não é um mural de funções</p>
+      <h2>A semana do louvor, do jeito que ela acontece.</h2>
+      <p class="sub">Em vez de um mosaico genérico, o LouvePlan acompanha o ritmo real da igreja: ensaio, repertório, som e culto.</p>
+      <div class="week">
+        <article class="day"><small>Seg</small><div><b>Respiro</b><span>Olhar a escala</span></div></article>
+        <article class="day on"><small>Ter</small><div><b>Ensaio</b><span>Vocais + banda</span></div></article>
+        <article class="day"><small>Qua</small><div><b>Ajustes</b><span>Tom e cortes</span></div></article>
+        <article class="day"><small>Qui</small><div><b>Repertório</b><span>Fechar setlist</span></div></article>
+        <article class="day"><small>Sex</small><div><b>Confirmações</b><span>Quem falta</span></div></article>
+        <article class="day"><small>Sáb</small><div><b>Passagem</b><span>Som e palco</span></div></article>
+        <article class="day on"><small>Dom</small><div><b>Culto</b><span>Todo mundo pronto</span></div></article>
+      </div>
+    </section>
+
+    <section class="wrap section" id="funcoes">
+      <p class="eyebrow">O que o ministério precisa</p>
+      <h2>Quatro portas. Zero planilha.</h2>
+      <p class="sub">A mesma grade do app: músicas, escalas, repertórios e membros. O resto vive dentro do evento.</p>
+      <div class="mosaic">
+        <article class="tile span">
+          <p class="eyebrow">Evento</p>
+          <h3>O domingo inteiro numa tela.</h3>
+          <p>Horário, setlist, quem toca, quem confirmou. Playlist e arquivo entram só quando existem.</p>
+          <div class="fake-list">
+            <div class="row"><span>Escala publicada</span><i class="dot"></i></div>
+            <div class="row"><span>4 músicas no set</span><i class="dot"></i></div>
+            <div class="row"><span>8 de 10 no RSVP</span><i class="dot"></i></div>
+          </div>
+          <div class="orb"></div>
+        </article>
+        <article class="tile">
+          <p class="eyebrow">Músicas</p>
+          <h3>Catálogo da igreja.</h3>
+          <p>Busca no acervo LouvePlan, capas, tom e o que já foi cantado.</p>
+        </article>
+        <article class="tile">
+          <p class="eyebrow">Pessoas</p>
+          <h3>Membros no ritmo certo.</h3>
+          <p>Papéis, indisponibilidade e presença. Sem grupo de WhatsApp eterno.</p>
+        </article>
+      </div>
+      <div class="grid4">
+        <article class="card">
+          <div class="icon">♪</div>
+          <h3>Músicas</h3>
+          <p>Biblioteca da casa, busca e capas. O repertório para de viver no Drive.</p>
+        </article>
+        <article class="card">
+          <div class="icon">▣</div>
+          <h3>Escalas</h3>
+          <p>Monte o time do culto e publique quando estiver redondo.</p>
+        </article>
+        <article class="card">
+          <div class="icon">☰</div>
+          <h3>Repertórios</h3>
+          <p>Setlist do evento, ordem das músicas, tom de cada uma.</p>
+        </article>
+        <article class="card">
+          <div class="icon">☺</div>
+          <h3>Membros</h3>
+          <p>Quem canta, quem toca, quem não pode nesse domingo.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section" id="como">
+      <p class="eyebrow">Três movimentos</p>
+      <h2>Três passos. Todo mundo no lugar, no tom, no horário.</h2>
+      <div class="steps">
+        <article class="step">
+          <div class="num">01</div>
+          <h3>Sua igreja</h3>
+          <p>Cria o espaço, convida o ministério e cada um entra com e-mail e senha.</p>
+        </article>
+        <article class="step">
+          <div class="num">02</div>
+          <h3>A escala da semana</h3>
+          <p>Escolhe o evento, monta o set, chama quem vai subir. O time confirma no app.</p>
+        </article>
+        <article class="step">
+          <div class="num">03</div>
+          <h3>O culto acontece</h3>
+          <p>Todo mundo chega sabendo a música, o tom e o horário. Menos improviso, mais presença.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section start" id="comecar">
+      <div class="start-copy">
+        <p class="eyebrow">Entrar</p>
+        <h2>Comece pelo ministério de louvor.</h2>
+        <p class="sub">Cadastro com e-mail e senha. Uma casa, o time de louvor inteiro junto. Escala, repertório e membros no app.</p>
+        <ul class="start-points">
+          <li><b>Hoje no app</b>E-mail e senha. Uma igreja, o ministério inteiro.</li>
+          <li><b>Na semana</b>Escala, setlist e RSVP. Sem print no grupo.</li>
+          <li><b>No culto</b>Música, tom e horário. Todo mundo no lugar.</li>
+        </ul>
+      </div>
+      <div class="plans">
+        <article class="plan featured">
+          <h3>Ministério</h3>
+          <p class="price">Grátis pra começar</p>
+          <p>O essencial pra tirar a escala do WhatsApp.</p>
+          <ul>
+            <li>Igreja, membros e papéis</li>
+            <li>Eventos com horário e RSVP</li>
+            <li>Setlist, músicas e capas</li>
+            <li>Escala do culto</li>
+          </ul>
+        <div class="stores">
+          <a class="store" href="#download" aria-label="Baixar na App Store">
+            <svg class="store-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.9-2.3c.7-1.2 1-2.3 1-2.4-.1 0-2.3-.9-2.3-3.9zm-2.1-6.2c.6-.8 1.1-1.8.9-2.9-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.8-.9 2.8 1.1.1 2.1-.6 2.7-1.4z"/></svg>
+            <span><small>Baixar na</small><b>App Store</b></span>
+          </a>
+          <a class="store" href="#download" aria-label="Disponível no Google Play">
+            <svg class="store-ico play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#34A853" d="M12.4 12.3 2 22.4c.2.4.6.7 1.1.8l11.4-11z"/><path fill="#4285F4" d="M21.1 10.3 17.3 8.1 12.4 12.3 17.3 16.5l3.8-2.2c1.2-.7 1.2-2.3 0-3z"/><path fill="#FBBC04" d="M2 1.6v20.8c0 .2 0 .4.1.6L12.4 12.3 2 1.6z"/><path fill="#EA4335" d="M12.4 12.3 2.1 1.6C2.4 1.1 3 .9 3.6 1.2l13.7 7.9z"/></svg>
+            <span><small>Disponível no</small><b>Google Play</b></span>
+          </a>
+        </div>
+
+        </article>
+
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <p class="eyebrow">Na voz de quem vive o palco</p>
+      <h2>O que o LouvePlan tira do caminho.</h2>
+      <div class="voices">
+        <blockquote class="quote">
+          <p>“Eu não quero mais montar escala em print. Quero abrir o culto e ver quem confirmou.”</p>
+          <small>Líder de louvor</small>
+        </blockquote>
+        <blockquote class="quote">
+          <p>“Se a música mudou de tom, eu preciso saber na terça. Não no ensaio de sábado.”</p>
+          <small>Vocal</small>
+        </blockquote>
+        <blockquote class="quote">
+          <p>“Arquivo e playlist só aparecem se existirem. O resto é ruído.”</p>
+          <small>Técnico de palco</small>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="finale">
+        <div>
+          <p class="eyebrow">Domingo chega de qualquer jeito</p>
+          <h2>Que o ministério chegue pronto.</h2>
+        </div>
+        <a class="btn btn-primary" href="#comecar">Criar minha igreja</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>© 2026 LouvePlan · Planeje o louvor da sua igreja</span>
+      <span>Feito para o ministério de louvor</span>
+    </div>
+  </footer>
+  <script>
+    const b = document.getElementById('burger');
+    const m = document.getElementById('menu');
+    b.addEventListener('click', () => m.classList.toggle('open'));
+    m.querySelectorAll('a').forEach(a => a.addEventListener('click', () => m.classList.remove('open')));
+  </script>
+</body>
+</html>
