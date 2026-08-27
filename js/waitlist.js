@@ -172,18 +172,16 @@ function applyApiValidation(json) {
   }
 }
 
-/** Campos do Otto: data.id, data.status, data.payment.br_code, data.payment.br_code_base64. */
+/** Só o envelope travado: json.data.{ id, status, payment.br_code, payment.br_code_base64 }. */
 function readWaitlist(json) {
-  if (!json || typeof json !== 'object') {
-    return { id: '', status: '', brCode: '', qrSrc: '' };
-  }
-  const data = json.data && typeof json.data === 'object' ? json.data : json;
-  const payment = data.payment && typeof data.payment === 'object' ? data.payment : data;
+  const data = json && json.data && typeof json.data === 'object' ? json.data : null;
+  if (!data) return { id: '', status: '', brCode: '', qrSrc: '' };
+  const payment = data.payment && typeof data.payment === 'object' ? data.payment : null;
   return {
     id: data.id ? String(data.id) : '',
     status: data.status ? String(data.status) : '',
-    brCode: payment.br_code ? String(payment.br_code) : '',
-    qrSrc: payment.br_code_base64 ? String(payment.br_code_base64) : '',
+    brCode: payment && payment.br_code ? String(payment.br_code) : '',
+    qrSrc: payment && payment.br_code_base64 ? String(payment.br_code_base64) : '',
   };
 }
 
@@ -264,18 +262,14 @@ async function submitWaitlist(event) {
       return;
     }
 
-    if (res.status === 409 || json.code === 'waitlist_already_joined') {
+    if (res.status === 409) {
       showJoined(json);
       return;
     }
 
     if (res.status === 200 || res.status === 201) {
       const entry = readWaitlist(json);
-      if (entry.status === 'paid') {
-        showStep('success');
-        return;
-      }
-      if (entry.id && (entry.brCode || entry.qrSrc)) {
+      if (entry.id && entry.brCode && entry.qrSrc) {
         showPix(entry);
         return;
       }
