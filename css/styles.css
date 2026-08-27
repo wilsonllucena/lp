@@ -87,7 +87,47 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 }
 .hero h1 em { font-style: italic; color: #f5d0fe; }
 .lede { margin-top: 18px; color: var(--muted); font-size: 18px; max-width: 34ch; }
-.hero-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.hero-offer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 22px;
+}
+.scarcity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #f9a8d4;
+  border: 1px solid rgba(236, 72, 153, .45);
+  background: rgba(236, 72, 153, .12);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+.scarcity-chip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--pink);
+  box-shadow: 0 0 10px var(--pink);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+.hero-offer-copy {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  max-width: 38ch;
+  line-height: 1.4;
+}
+.hero-actions { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
 .roles { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
 .chip {
   font-size: 12px; color: var(--muted); border: 1px solid var(--stroke);
@@ -245,6 +285,11 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   display: flex; justify-content: space-between; align-items: center; gap: 24px;
 }
 .finale h2 { font-family: "Fraunces", serif; font-size: clamp(28px, 3vw, 40px); letter-spacing: -0.03em; }
+.finale-lead {
+  margin-top: 8px;
+  color: var(--muted);
+  max-width: 36ch;
+}
 
 footer { border-top: 1px solid var(--stroke); padding: 28px 0 48px; color: var(--muted); font-size: 13px; }
 .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -398,6 +443,26 @@ body.waitlist-lock { overflow: hidden; }
   color: #f5d0fe;
 }
 .waitlist-lead { color: var(--muted); margin-bottom: 22px; }
+.waitlist-perks {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin: -8px 0 22px;
+}
+.waitlist-perks li {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(236, 72, 153, .28);
+  background: rgba(139, 92, 246, .14);
+  color: var(--muted);
+  font-size: 14px;
+}
+.waitlist-perks b {
+  display: block;
+  color: var(--ink);
+  font-size: 13px;
+  margin-bottom: 2px;
+}
 .waitlist-btn { width: 100%; margin-top: 8px; }
 .waitlist-btn + .waitlist-btn { margin-top: 10px; }
 .waitlist-field {

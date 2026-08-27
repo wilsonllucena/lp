@@ -191,7 +191,7 @@ function showPix(entry) {
   qrImg.src = hasQr ? entry.qrSrc : '';
   brInput.value = entry.brCode;
   copyBtn.disabled = !entry.brCode;
-  pollStatusEl.textContent = 'Aguardando o PIX… você só entra na lista depois do pagamento.';
+  pollStatusEl.textContent = 'Aguardando o PIX… sem ele, você espera a loja.';
   showStep('pix');
   if (entry.id) startPoll(entry.id);
 }
