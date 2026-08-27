@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="assets/logo.png?v=6" type="image/png" />
-  <link rel="stylesheet" href="css/styles.css?v=5" />
+  <link rel="stylesheet" href="css/styles.css?v=6" />
 </head>
 <body>
   <div class="glow"></div>
@@ -259,6 +259,7 @@
             <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required maxlength="16" placeholder="(00) 00000-0000" />
             <small data-error="phone"></small>
           </label>
+          <p class="waitlist-form-error" id="waitlist-form-error" hidden></p>
           <button type="submit" class="btn btn-primary waitlist-btn" id="waitlist-submit">Pagar R$ 4,90</button>
         </form>
       </section>
@@ -273,14 +274,6 @@
           <button type="button" class="btn btn-ghost" id="waitlist-copy">Copiar</button>
         </div>
         <p class="waitlist-poll" id="waitlist-poll" aria-live="polite">Aguardando o PIX…</p>
-      </section>
-
-      <section class="waitlist-step" data-step="pending" hidden>
-        <p class="eyebrow">Pagamento</p>
-        <h2 id="waitlist-title-pending">Falta confirmar o PIX</h2>
-        <p class="waitlist-lead">Recebemos seus dados, mas ainda precisamos da confirmação do pagamento de R$ 4,90. Sem o PIX, você não entra na lista.</p>
-        <button type="button" class="btn btn-primary waitlist-btn" data-waitlist-retry>Tentar de novo</button>
-        <button type="button" class="btn btn-ghost waitlist-btn" data-waitlist-close>Fechar</button>
       </section>
 
       <section class="waitlist-step" data-step="error" hidden>
@@ -301,7 +294,7 @@
       <section class="waitlist-step" data-step="joined" hidden>
         <p class="eyebrow">Lista de espera</p>
         <h2 id="waitlist-title-joined">Você já está na lista.</h2>
-        <p class="waitlist-lead">Este e-mail já pagou a taxa. Não precisa pagar de novo.</p>
+        <p class="waitlist-lead" id="waitlist-joined-copy">Este e-mail já está na lista de espera.</p>
         <button type="button" class="btn btn-primary waitlist-btn" data-waitlist-close>Fechar</button>
       </section>
     </div>
@@ -313,6 +306,6 @@
     b.addEventListener('click', () => m.classList.toggle('open'));
     m.querySelectorAll('a').forEach(a => a.addEventListener('click', () => m.classList.remove('open')));
   </script>
-  <script src="js/waitlist.js?v=1" defer></script>
+  <script src="js/waitlist.js?v=2" defer></script>
 </body>
 </html>

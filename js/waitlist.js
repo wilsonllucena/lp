@@ -1,9 +1,14 @@
 /**
- * Lista de espera paga — COD-18 / contrato Otto (COD-19).
+ * Lista de espera — contrato Otto (COD-19), PIX na landing. Sem cartão, sem redirect.
  *
  * Otto: altere só WAITLIST_API_BASE se o host mudar.
- * POST {base}/api/v1/waitlist  body { name, email, phone }
- * GET  {base}/api/v1/waitlist/{id}  poll até status === "paid"
+ * Fallback local: http://127.0.0.1:8000
+ *
+ * POST {base}/api/v1/waitlist  JSON { name, email, phone }  phone dígitos 11999999999
+ *   201 created e 200 pending-reuse — mesmo envelope data.{ id, status, amount, payment }
+ *   409 { message, code: "waitlist_already_joined" }
+ *   422 erros de validação
+ * GET  {base}/api/v1/waitlist/{data.id}  até data.status === "paid" (payment pode ser null)
  */
 const WAITLIST_API_BASE = 'https://api.louveplan.com.br';
 const WAITLIST_PATH = '/api/v1/waitlist';
@@ -17,6 +22,8 @@ const brInput = document.getElementById('waitlist-brcode');
 const copyBtn = document.getElementById('waitlist-copy');
 const pollStatusEl = document.getElementById('waitlist-poll');
 const submitBtn = document.getElementById('waitlist-submit');
+const joinedCopy = document.getElementById('waitlist-joined-copy');
+const formBanner = document.getElementById('waitlist-form-error');
 
 let lastOpener = null;
 let pollTimer = null;
@@ -90,6 +97,10 @@ function clearFieldErrors() {
   form.querySelectorAll('input').forEach((input) => {
     input.removeAttribute('aria-invalid');
   });
+  if (formBanner) {
+    formBanner.hidden = true;
+    formBanner.textContent = '';
+  }
 }
 
 function field(name) {
@@ -141,51 +152,50 @@ function validateForm() {
   return ok;
 }
 
-function unwrap(json) {
-  return json && typeof json === 'object' && json.data && typeof json.data === 'object'
-    ? json.data
-    : json;
+function applyApiValidation(json) {
+  clearFieldErrors();
+  const errors = json && json.errors && typeof json.errors === 'object' ? json.errors : {};
+  let mapped = false;
+  ['name', 'email', 'phone'].forEach((key) => {
+    const item = errors[key];
+    const msg = Array.isArray(item) ? item[0] : item;
+    if (msg) {
+      setFieldError(key, String(msg));
+      mapped = true;
+    }
+  });
+  if (!mapped && formBanner) {
+    formBanner.hidden = false;
+    formBanner.textContent = json && json.message
+      ? String(json.message)
+      : 'Confira os dados e tente de novo.';
+  }
 }
 
-function extractPix(json) {
-  const root = unwrap(json) || {};
-  const payment = root.payment && typeof root.payment === 'object' ? root.payment : root;
-  const brCode = payment.br_code || payment.brCode || root.br_code || root.brCode || '';
-  const brCodeBase64 =
-    payment.br_code_base64 ||
-    payment.brCodeBase64 ||
-    root.br_code_base64 ||
-    root.brCodeBase64 ||
-    '';
+/** Campos do Otto: data.id, data.status, data.payment.br_code, data.payment.br_code_base64. */
+function readWaitlist(json) {
+  if (!json || typeof json !== 'object') {
+    return { id: '', status: '', brCode: '', qrSrc: '' };
+  }
+  const data = json.data && typeof json.data === 'object' ? json.data : json;
+  const payment = data.payment && typeof data.payment === 'object' ? data.payment : data;
   return {
-    id: root.id || json?.id || '',
-    status: String(root.status || json?.status || '').toLowerCase(),
-    brCode: String(brCode || ''),
-    brCodeBase64: String(brCodeBase64 || ''),
+    id: data.id ? String(data.id) : '',
+    status: data.status ? String(data.status) : '',
+    brCode: payment.br_code ? String(payment.br_code) : '',
+    qrSrc: payment.br_code_base64 ? String(payment.br_code_base64) : '',
   };
 }
 
-function pixImageSrc(b64) {
-  if (!b64) return '';
-  return b64.startsWith('data:') ? b64 : `data:image/png;base64,${b64}`;
-}
-
-function isAlreadyJoined(status, json) {
-  if (status !== 409) {
-    return JSON.stringify(json || '').toLowerCase().includes('waitlist_already_joined');
-  }
-  const pix = extractPix(json);
-  return !(pix.brCode || pix.brCodeBase64);
-}
-
-function showPix(pix) {
-  qrImg.hidden = !pix.brCodeBase64;
-  qrImg.src = pix.brCodeBase64 ? pixImageSrc(pix.brCodeBase64) : '';
-  brInput.value = pix.brCode;
-  copyBtn.disabled = !pix.brCode;
+function showPix(entry) {
+  const hasQr = Boolean(entry.qrSrc);
+  qrImg.hidden = !hasQr;
+  qrImg.src = hasQr ? entry.qrSrc : '';
+  brInput.value = entry.brCode;
+  copyBtn.disabled = !entry.brCode;
   pollStatusEl.textContent = 'Aguardando o PIX… você só entra na lista depois do pagamento.';
   showStep('pix');
-  if (pix.id) startPoll(pix.id);
+  if (entry.id) startPoll(entry.id);
 }
 
 function startPoll(id) {
@@ -200,8 +210,7 @@ function startPoll(id) {
       });
       if (res.ok) {
         const json = await res.json().catch(() => ({}));
-        const pix = extractPix(json);
-        if (pix.status === 'paid') {
+        if (readWaitlist(json).status === 'paid') {
           stopPoll();
           showStep('success');
           return;
@@ -209,11 +218,19 @@ function startPoll(id) {
       }
     } catch (err) {
       if (err && err.name === 'AbortError') return;
-      // GET ainda fora do ar: não marca como lista. Mantém o QR.
     }
     pollTimer = setTimeout(tick, WAITLIST_POLL_MS);
   };
-  pollTimer = setTimeout(tick, WAITLIST_POLL_MS);
+  tick();
+}
+
+function showJoined(json) {
+  if (joinedCopy) {
+    joinedCopy.textContent = json && json.message
+      ? String(json.message)
+      : 'Este e-mail já está na lista de espera.';
+  }
+  showStep('joined');
 }
 
 async function submitWaitlist(event) {
@@ -240,29 +257,31 @@ async function submitWaitlist(event) {
     });
 
     const json = await res.json().catch(() => ({}));
-    const pix = extractPix(json);
 
-    if (isAlreadyJoined(res.status, json)) {
-      showStep('joined');
+    if (res.status === 422) {
+      applyApiValidation(json);
+      showStep('form');
       return;
     }
 
-    if (!res.ok) {
-      showStep('error');
+    if (res.status === 409 || json.code === 'waitlist_already_joined') {
+      showJoined(json);
       return;
     }
 
-    if (pix.status === 'paid') {
-      showStep('success');
-      return;
+    if (res.status === 200 || res.status === 201) {
+      const entry = readWaitlist(json);
+      if (entry.status === 'paid') {
+        showStep('success');
+        return;
+      }
+      if (entry.id && (entry.brCode || entry.qrSrc)) {
+        showPix(entry);
+        return;
+      }
     }
 
-    if (pix.brCode || pix.brCodeBase64) {
-      showPix(pix);
-      return;
-    }
-
-    showStep('pending');
+    showStep('error');
   } catch {
     showStep('error');
   } finally {
