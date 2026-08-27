@@ -484,6 +484,7 @@ body.waitlist-lock { overflow: hidden; }
   border: 1px solid var(--stroke);
   background: rgba(0, 0, 0, .28);
   color: var(--ink);
+  font-size: 16px;
 }
 .waitlist-field input:focus {
   outline: 2px solid rgba(139, 92, 246, .65);
@@ -515,7 +516,7 @@ body.waitlist-lock { overflow: hidden; }
   border: 1px solid var(--stroke);
   background: rgba(0, 0, 0, .28);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 16px;
 }
 .waitlist-copyrow .btn { height: 44px; }
 .waitlist-poll { color: var(--muted); font-size: 13px; }
@@ -528,6 +529,7 @@ body.waitlist-lock { overflow: hidden; }
   .waitlist-sheet {
     width: 100%;
     max-height: 92vh;
+    max-height: 92dvh;
     border-radius: 24px 24px 0 0;
     padding-bottom: max(24px, env(safe-area-inset-bottom));
   }

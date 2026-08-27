@@ -36,6 +36,11 @@ function waitlistUrl(id) {
     : `${base}${WAITLIST_PATH}`;
 }
 
+function isCoarseOrNarrow() {
+  return window.matchMedia('(pointer: coarse)').matches
+    || window.matchMedia('(max-width: 720px)').matches;
+}
+
 function showStep(name) {
   overlay.querySelectorAll('[data-step]').forEach((step) => {
     step.hidden = step.dataset.step !== name;
@@ -43,7 +48,8 @@ function showStep(name) {
   const heading = overlay.querySelector(`[data-step="${name}"] h2`);
   if (heading) sheet.setAttribute('aria-labelledby', heading.id);
   if (name === 'form') {
-    field('name').focus();
+    if (!isCoarseOrNarrow()) field('name').focus();
+    else sheet.focus();
     return;
   }
   const primary =
