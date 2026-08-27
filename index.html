@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="assets/logo.png?v=6" type="image/png" />
-  <link rel="stylesheet" href="css/styles.css?v=6" />
+  <link rel="stylesheet" href="css/styles.css?v=7" />
 </head>
 <body>
   <div class="glow"></div>
@@ -26,7 +26,7 @@
         <a href="#comecar" data-waitlist-open>Lista de espera</a>
       </nav>
       <div class="nav-cta">
-        <a class="btn btn-primary" href="#comecar" data-waitlist-open>Começar</a>
+        <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir acesso</a>
         <button class="burger" id="burger" aria-label="Abrir menu">☰</button>
       </div>
     </div>
@@ -36,7 +36,7 @@
     <a href="#funcoes">O app</a>
     <a href="#como">Como funciona</a>
     <a href="#comecar" data-waitlist-open>Lista de espera</a>
-    <a class="btn btn-primary" href="#comecar" data-waitlist-open>Começar</a>
+    <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir acesso</a>
   </div>
 
   <main id="topo">
@@ -45,11 +45,15 @@
         <p class="kicker"><i></i> Para o ministério de louvor</p>
         <h1>O culto não começa no palco. <em>Começa no plano.</em></h1>
         <p class="lede">Escala, repertório, músicas e confirmação no mesmo lugar. Quem vai tocar já sabe o tom, o ensaio e o horário.</p>
+        <div class="hero-offer">
+          <span class="scarcity-chip"><i></i> Primeira leva desta semana</span>
+          <p class="hero-offer-copy">Acesso na semana de lançamento. 60% OFF no Pro só pra quem está na lista.</p>
+        </div>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#comecar" data-waitlist-open>Entrar na lista de espera</a>
+          <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir meu acesso</a>
           <a class="btn btn-ghost" href="#semana">Ver a semana do louvor</a>
         </div>
-        <p class="store-soon">O app ainda não está na App Store nem no Google Play. A vaga é pela lista de espera.</p>
+        <p class="store-soon">O app ainda não está nas lojas. Quem não entra agora espera a abertura pública.</p>
 
         <div class="roles">
           <span class="chip">Líder de louvor</span>
@@ -166,26 +170,28 @@
       <div class="start-copy">
         <p class="eyebrow">Lista de espera</p>
         <h2>Comece pelo ministério de louvor.</h2>
-        <p class="sub">Garanta a vaga antes do app nas lojas. Escala, repertório e membros no mesmo lugar — o time de louvor inteiro junto.</p>
+        <p class="sub">Primeira leva desta semana. Quem entra garante o app no lançamento. Quem fica de fora espera a loja.</p>
         <ul class="start-points">
-          <li><b>Hoje na lista</b>Nome, e-mail e telefone. Taxa de R$ 4,90 pra reservar a vaga.</li>
-          <li><b>Na semana</b>Escala, setlist e RSVP. Sem print no grupo.</li>
+          <li><b>Primeira leva</b>R$ 4,90 reserva o acesso na semana de lançamento. Quem não entra espera a loja.</li>
+          <li><b>60% no Pro</b>Bônus só da lista. A taxa não é crédito de plano.</li>
           <li><b>No culto</b>Música, tom e horário. Todo mundo no lugar.</li>
         </ul>
       </div>
       <div class="plans">
         <article class="plan featured">
           <h3>Ministério</h3>
-          <p class="price">Grátis pra começar</p>
-          <p>O essencial pra tirar a escala do WhatsApp.</p>
+          <p class="price">R$ 4,90</p>
+          <p>Taxa da lista. Acesso na semana de lançamento + 60% OFF no Pro.</p>
           <ul>
             <li>Igreja, membros e papéis</li>
             <li>Eventos com horário e RSVP</li>
             <li>Setlist, músicas e capas</li>
             <li>Escala do culto</li>
+            <li>Acesso na semana de lançamento</li>
+            <li>60% OFF no Pro (lista)</li>
           </ul>
-          <a class="btn btn-primary plan-cta" href="#comecar" data-waitlist-open>Entrar na lista de espera</a>
-          <p class="waitlist-hint">O app ainda não está nas lojas. A taxa da lista não é crédito de plano.</p>
+          <a class="btn btn-primary plan-cta" href="#comecar" data-waitlist-open>Garantir meu acesso</a>
+          <p class="waitlist-hint">A taxa não é crédito de plano. O 60% no Pro é bônus separado. Fora da lista, você espera a loja.</p>
         </article>
       </div>
     </section>
@@ -212,10 +218,11 @@
     <section class="wrap">
       <div class="finale">
         <div>
-          <p class="eyebrow">Domingo chega de qualquer jeito</p>
-          <h2>Que o ministério chegue pronto.</h2>
+          <p class="eyebrow">Primeira leva desta semana</p>
+          <h2>Quem entra agora abre na semana de lançamento.</h2>
+          <p class="finale-lead">60% OFF no Pro. Quem fica de fora espera a loja.</p>
         </div>
-        <a class="btn btn-primary" href="#comecar" data-waitlist-open>Entrar na lista de espera</a>
+        <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir meu acesso</a>
       </div>
     </section>
   </main>
@@ -232,17 +239,21 @@
       <button type="button" class="waitlist-close" data-waitlist-close aria-label="Fechar">×</button>
 
       <section class="waitlist-step" data-step="price">
-        <p class="eyebrow">Lista de espera</p>
+        <p class="eyebrow">Primeira leva desta semana</p>
         <p class="waitlist-amount">R$ 4,90</p>
-        <h2 id="waitlist-title-price">Taxa da lista</h2>
-        <p class="waitlist-lead">Esse valor reserva sua vaga no ministério de louvor. Não é crédito de plano.</p>
-        <button type="button" class="btn btn-primary waitlist-btn" data-waitlist-next>Continuar</button>
+        <h2 id="waitlist-title-price">Entra agora. Depois é a loja.</h2>
+        <p class="waitlist-lead">Taxa da lista — não é crédito de plano. Duas coisas que a loja não dá:</p>
+        <ul class="waitlist-perks">
+          <li><b>Acesso na semana de lançamento</b>Quem não entra espera o app nas lojas.</li>
+          <li><b>60% OFF no Pro</b>Bônus só desta lista. O R$ 4,90 não abate o plano.</li>
+        </ul>
+        <button type="button" class="btn btn-primary waitlist-btn" data-waitlist-next>Continuar e garantir</button>
       </section>
 
       <section class="waitlist-step" data-step="form" hidden>
-        <p class="eyebrow">Lista de espera</p>
+        <p class="eyebrow">Quase lá</p>
         <h2 id="waitlist-title-form">Seus dados</h2>
-        <p class="waitlist-lead">Depois disso você paga R$ 4,90 no PIX. Sem o pagamento, você não entra na lista.</p>
+        <p class="waitlist-lead">Em seguida, PIX de R$ 4,90. Você trava o lançamento e o 60% no Pro.</p>
         <form id="waitlist-form" novalidate>
           <label class="waitlist-field">
             <span>Nome</span>
@@ -265,9 +276,9 @@
       </section>
 
       <section class="waitlist-step" data-step="pix" hidden>
-        <p class="eyebrow">Pagar</p>
+        <p class="eyebrow">Último passo</p>
         <h2 id="waitlist-title-pix">PIX de R$ 4,90</h2>
-        <p class="waitlist-lead">Escaneie o QR ou copie o código. Você só entra na lista depois do pagamento.</p>
+        <p class="waitlist-lead">Sem o PIX, você espera a loja. Com ele: semana de lançamento + 60% no Pro.</p>
         <img class="waitlist-qr" id="waitlist-qr" alt="QR Code PIX" hidden />
         <div class="waitlist-copyrow">
           <input id="waitlist-brcode" readonly aria-label="Código PIX copia e cola" />
@@ -287,7 +298,7 @@
       <section class="waitlist-step" data-step="success" hidden>
         <p class="eyebrow">Pronto</p>
         <h2 id="waitlist-title-success">Você está na lista.</h2>
-        <p class="waitlist-lead">Pagamento confirmado. Avisamos quando o app do ministério de louvor abrir.</p>
+        <p class="waitlist-lead">Pagamento confirmado. Acesso na semana de lançamento e 60% OFF no Pro estão seus. Avisamos quando o app abrir.</p>
         <button type="button" class="btn btn-primary waitlist-btn" data-waitlist-close>Fechar</button>
       </section>
 
@@ -306,6 +317,6 @@
     b.addEventListener('click', () => m.classList.toggle('open'));
     m.querySelectorAll('a').forEach(a => a.addEventListener('click', () => m.classList.remove('open')));
   </script>
-  <script src="js/waitlist.js?v=3" defer></script>
+  <script src="js/waitlist.js?v=4" defer></script>
 </body>
 </html>
