@@ -510,6 +510,7 @@ body.waitlist-lock { overflow: hidden; }
   border-radius: 16px;
   background: #fff;
 }
+.waitlist-qr[hidden] { display: none; }
 .waitlist-copyrow {
   display: grid;
   grid-template-columns: 1fr auto;

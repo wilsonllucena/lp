@@ -215,7 +215,8 @@ function readWaitlist(json) {
 function showPix(entry) {
   const hasQr = Boolean(entry.qrSrc);
   qrImg.hidden = !hasQr;
-  qrImg.src = hasQr ? entry.qrSrc : '';
+  if (hasQr) qrImg.src = entry.qrSrc;
+  else qrImg.removeAttribute('src');
   brInput.value = entry.brCode;
   copyBtn.disabled = !entry.brCode;
   pollStatusEl.textContent = 'Aguardando o PIX… sem ele, você espera a loja.';
