@@ -24,10 +24,12 @@ const pollStatusEl = document.getElementById('waitlist-poll');
 const submitBtn = document.getElementById('waitlist-submit');
 const joinedCopy = document.getElementById('waitlist-joined-copy');
 const formBanner = document.getElementById('waitlist-form-error');
+const errorDetail = document.getElementById('waitlist-error-detail');
 
 let lastOpener = null;
 let pollTimer = null;
 let pollAbort = null;
+let creating = false;
 
 function waitlistUrl(id) {
   const base = WAITLIST_API_BASE.replace(/\/$/, '');
@@ -73,6 +75,7 @@ function openWaitlist(opener) {
   stopPoll();
   form.reset();
   clearFieldErrors();
+  syncSubmitBusy();
   overlay.hidden = false;
   document.body.classList.add('waitlist-lock');
   showStep('price');
@@ -94,6 +97,24 @@ function stopPoll() {
     pollAbort.abort();
     pollAbort = null;
   }
+}
+
+function syncSubmitBusy() {
+  submitBtn.disabled = creating;
+  submitBtn.textContent = creating ? 'Aguarde…' : 'Pagar R$ 4,90';
+}
+
+function showError(status, json, networkFallback) {
+  const msg = json && json.message ? String(json.message).trim() : '';
+  let text = '';
+  if (status) {
+    text = `HTTP ${status}`;
+    text += msg ? ` — ${msg}` : ' — Sem detalhes do servidor.';
+  } else {
+    text = networkFallback || 'Falha de conexão. Tente de novo.';
+  }
+  if (errorDetail) errorDetail.textContent = text;
+  showStep('error');
 }
 
 function clearFieldErrors() {
@@ -194,7 +215,8 @@ function readWaitlist(json) {
 function showPix(entry) {
   const hasQr = Boolean(entry.qrSrc);
   qrImg.hidden = !hasQr;
-  qrImg.src = hasQr ? entry.qrSrc : '';
+  if (hasQr) qrImg.src = entry.qrSrc;
+  else qrImg.removeAttribute('src');
   brInput.value = entry.brCode;
   copyBtn.disabled = !entry.brCode;
   pollStatusEl.textContent = 'Aguardando o PIX… sem ele, você espera a loja.';
@@ -239,10 +261,11 @@ function showJoined(json) {
 
 async function submitWaitlist(event) {
   event.preventDefault();
+  if (creating) return;
   if (!validateForm()) return;
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Aguarde…';
+  creating = true;
+  syncSubmitBusy();
 
   const body = {
     name: field('name').value.trim(),
@@ -275,18 +298,19 @@ async function submitWaitlist(event) {
 
     if (res.status === 200 || res.status === 201) {
       const entry = readWaitlist(json);
-      if (entry.id && entry.brCode && entry.qrSrc) {
+      // Copia-e-cola basta; não exigir br_code_base64 / QR.
+      if (entry.id && entry.brCode) {
         showPix(entry);
         return;
       }
     }
 
-    showStep('error');
+    showError(res.status, json);
   } catch {
-    showStep('error');
+    showError(0, null, 'Falha de conexão. Tente de novo.');
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Pagar R$ 4,90';
+    creating = false;
+    syncSubmitBusy();
   }
 }
 
