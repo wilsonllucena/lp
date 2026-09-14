@@ -1,40 +1,19 @@
 /**
- * Lista de espera — contrato Otto (COD-19), PIX na landing. Sem cartão, sem redirect.
+ * CTA Garantir acesso — formulário curto e WhatsApp de vendas. Sem PIX.
  *
- * Otto: altere só WAITLIST_API_BASE se o host mudar.
- * Fallback local: http://127.0.0.1:8000
- *
- * POST {base}/api/v1/waitlist  JSON { name, email, phone }  phone dígitos 11999999999
- *   201 created e 200 pending-reuse — mesmo envelope data.{ id, status, amount, payment }
- *   409 { message, code: "waitlist_already_joined" }
- *   422 erros de validação
- * GET  {base}/api/v1/waitlist/{data.id}  até data.status === "paid" (payment pode ser null)
+ * wa.me/5561985507287 com nome, e-mail, telefone e a linha de interesse.
  */
-const WAITLIST_API_BASE = 'https://api.louveplan.com.br';
-const WAITLIST_PATH = '/api/v1/waitlist';
-const WAITLIST_POLL_MS = 3000;
+const SALES_WHATSAPP = '5561985507287';
+const INTEREST_LINE = 'Tenho interesse em organizar minha equipe.';
 
 const overlay = document.getElementById('waitlist');
 const sheet = overlay.querySelector('.waitlist-sheet');
 const form = document.getElementById('waitlist-form');
-const qrImg = document.getElementById('waitlist-qr');
-const brInput = document.getElementById('waitlist-brcode');
-const copyBtn = document.getElementById('waitlist-copy');
-const pollStatusEl = document.getElementById('waitlist-poll');
-const submitBtn = document.getElementById('waitlist-submit');
-const joinedCopy = document.getElementById('waitlist-joined-copy');
 const formBanner = document.getElementById('waitlist-form-error');
+const reopenBtn = document.getElementById('waitlist-reopen');
 
 let lastOpener = null;
-let pollTimer = null;
-let pollAbort = null;
-
-function waitlistUrl(id) {
-  const base = WAITLIST_API_BASE.replace(/\/$/, '');
-  return id
-    ? `${base}${WAITLIST_PATH}/${encodeURIComponent(id)}`
-    : `${base}${WAITLIST_PATH}`;
-}
+let lastWhatsAppUrl = '';
 
 function isCoarseOrNarrow() {
   return window.matchMedia('(pointer: coarse)').matches
@@ -70,30 +49,18 @@ function getFocusable() {
 
 function openWaitlist(opener) {
   lastOpener = opener || document.activeElement;
-  stopPoll();
   form.reset();
   clearFieldErrors();
+  lastWhatsAppUrl = '';
   overlay.hidden = false;
   document.body.classList.add('waitlist-lock');
-  showStep('price');
+  showStep('form');
 }
 
 function closeWaitlist() {
-  stopPoll();
   overlay.hidden = true;
   document.body.classList.remove('waitlist-lock');
   if (lastOpener && typeof lastOpener.focus === 'function') lastOpener.focus();
-}
-
-function stopPoll() {
-  if (pollTimer) {
-    clearTimeout(pollTimer);
-    pollTimer = null;
-  }
-  if (pollAbort) {
-    pollAbort.abort();
-    pollAbort = null;
-  }
 }
 
 function clearFieldErrors() {
@@ -158,150 +125,38 @@ function validateForm() {
   return ok;
 }
 
-function applyApiValidation(json) {
-  clearFieldErrors();
-  const errors = json && json.errors && typeof json.errors === 'object' ? json.errors : {};
-  let mapped = false;
-  ['name', 'email', 'phone'].forEach((key) => {
-    const item = errors[key];
-    const msg = Array.isArray(item) ? item[0] : item;
-    if (msg) {
-      setFieldError(key, String(msg));
-      mapped = true;
-    }
-  });
-  if (!mapped && formBanner) {
-    formBanner.hidden = false;
-    formBanner.textContent = json && json.message
-      ? String(json.message)
-      : 'Confira os dados e tente de novo.';
+function buildWhatsAppUrl({ name, email, phone, church }) {
+  const parts = [
+    `Olá! Meu nome é ${name}.`,
+    `E-mail: ${email}.`,
+    `Telefone: ${phone}.`,
+  ];
+  if (church) parts.push(`Igreja: ${church}.`);
+  parts.push(INTEREST_LINE);
+  return `https://wa.me/${SALES_WHATSAPP}?text=${encodeURIComponent(parts.join(' '))}`;
+}
+
+function openWhatsApp(url) {
+  lastWhatsAppUrl = url;
+  const opened = window.open(url, '_blank', 'noopener,noreferrer');
+  if (!opened) {
+    window.location.assign(url);
+    return false;
   }
+  return true;
 }
 
-/** Só o envelope travado: json.data.{ id, status, payment.br_code, payment.br_code_base64 }. */
-function readWaitlist(json) {
-  const data = json && json.data && typeof json.data === 'object' ? json.data : null;
-  if (!data) return { id: '', status: '', brCode: '', qrSrc: '' };
-  const payment = data.payment && typeof data.payment === 'object' ? data.payment : null;
-  return {
-    id: data.id ? String(data.id) : '',
-    status: data.status ? String(data.status) : '',
-    brCode: payment && payment.br_code ? String(payment.br_code) : '',
-    qrSrc: payment && payment.br_code_base64 ? String(payment.br_code_base64) : '',
-  };
-}
-
-function showPix(entry) {
-  const hasQr = Boolean(entry.qrSrc);
-  qrImg.hidden = !hasQr;
-  qrImg.src = hasQr ? entry.qrSrc : '';
-  brInput.value = entry.brCode;
-  copyBtn.disabled = !entry.brCode;
-  pollStatusEl.textContent = 'Aguardando o PIX… sem ele, você espera a loja.';
-  showStep('pix');
-  if (entry.id) startPoll(entry.id);
-}
-
-function startPoll(id) {
-  stopPoll();
-  const tick = async () => {
-    pollAbort = new AbortController();
-    try {
-      const res = await fetch(waitlistUrl(id), {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-        signal: pollAbort.signal,
-      });
-      if (res.ok) {
-        const json = await res.json().catch(() => ({}));
-        if (readWaitlist(json).status === 'paid') {
-          stopPoll();
-          showStep('success');
-          return;
-        }
-      }
-    } catch (err) {
-      if (err && err.name === 'AbortError') return;
-    }
-    pollTimer = setTimeout(tick, WAITLIST_POLL_MS);
-  };
-  tick();
-}
-
-function showJoined(json) {
-  if (joinedCopy) {
-    joinedCopy.textContent = json && json.message
-      ? String(json.message)
-      : 'Este e-mail já está na lista de espera.';
-  }
-  showStep('joined');
-}
-
-async function submitWaitlist(event) {
+function submitWaitlist(event) {
   event.preventDefault();
   if (!validateForm()) return;
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Aguarde…';
+  const name = field('name').value.trim();
+  const email = field('email').value.trim();
+  const phone = formatPhone(field('phone').value);
+  const church = field('church') ? field('church').value.trim() : '';
+  const url = buildWhatsAppUrl({ name, email, phone, church });
 
-  const body = {
-    name: field('name').value.trim(),
-    email: field('email').value.trim(),
-    phone: digits(field('phone').value),
-  };
-
-  try {
-    const res = await fetch(waitlistUrl(), {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    const json = await res.json().catch(() => ({}));
-
-    if (res.status === 422) {
-      applyApiValidation(json);
-      showStep('form');
-      return;
-    }
-
-    if (res.status === 409) {
-      showJoined(json);
-      return;
-    }
-
-    if (res.status === 200 || res.status === 201) {
-      const entry = readWaitlist(json);
-      if (entry.id && entry.brCode && entry.qrSrc) {
-        showPix(entry);
-        return;
-      }
-    }
-
-    showStep('error');
-  } catch {
-    showStep('error');
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Pagar R$ 4,90';
-  }
-}
-
-async function copyPix() {
-  const code = brInput.value.trim();
-  if (!code) return;
-  try {
-    await navigator.clipboard.writeText(code);
-    copyBtn.textContent = 'Copiado';
-    setTimeout(() => {
-      copyBtn.textContent = 'Copiar';
-    }, 1600);
-  } catch {
-    brInput.select();
-  }
+  if (openWhatsApp(url)) showStep('sent');
 }
 
 document.querySelectorAll('[data-waitlist-open]').forEach((el) => {
@@ -319,15 +174,12 @@ overlay.querySelectorAll('[data-waitlist-close]').forEach((el) => {
   el.addEventListener('click', closeWaitlist);
 });
 
-overlay.querySelector('[data-waitlist-next]').addEventListener('click', () => {
-  showStep('form');
-});
+if (reopenBtn) {
+  reopenBtn.addEventListener('click', () => {
+    if (lastWhatsAppUrl) openWhatsApp(lastWhatsAppUrl);
+  });
+}
 
-overlay.querySelectorAll('[data-waitlist-retry]').forEach((el) => {
-  el.addEventListener('click', () => showStep('form'));
-});
-
-copyBtn.addEventListener('click', copyPix);
 form.addEventListener('submit', submitWaitlist);
 
 field('phone').addEventListener('input', () => {
