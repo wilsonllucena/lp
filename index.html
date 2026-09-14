@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="assets/logo.png?v=6" type="image/png" />
-  <link rel="stylesheet" href="css/styles.css?v=8" />
+  <link rel="stylesheet" href="css/styles.css?v=9" />
 </head>
 <body>
   <div class="glow"></div>
@@ -21,7 +21,7 @@
       </a>
       <nav class="nav-links">
         <a href="#semana">A semana</a>
-        <a href="#funcoes">O app</a>
+        <a href="#funcoes">O painel</a>
         <a href="#como">Como funciona</a>
         <a href="#comecar" data-waitlist-open>Lista de espera</a>
       </nav>
@@ -33,7 +33,7 @@
   </header>
   <div class="mobile-panel" id="menu">
     <a href="#semana">A semana</a>
-    <a href="#funcoes">O app</a>
+    <a href="#funcoes">O painel</a>
     <a href="#como">Como funciona</a>
     <a href="#comecar" data-waitlist-open>Lista de espera</a>
     <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir acesso</a>
@@ -51,9 +51,9 @@
         </div>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#comecar" data-waitlist-open>Garantir meu acesso</a>
-          <a class="btn btn-ghost" href="#semana">Ver a semana do louvor</a>
+          <a class="btn btn-ghost" href="#funcoes">Ver o painel</a>
         </div>
-        <p class="store-soon">O app ainda não está nas lojas. Quem não entra agora espera a abertura pública.</p>
+        <p class="store-soon">O painel e o app ainda não estão nas lojas. Quem não entra agora espera a abertura pública.</p>
 
         <div class="roles">
           <span class="chip">Líder de louvor</span>
@@ -62,18 +62,29 @@
           <span class="chip">Técnicos</span>
         </div>
       </div>
-      <div class="phone-wrap">
-        <div class="phone phone-back" aria-hidden="true">
-          <img src="assets/app-evento.png" alt="" />
-        </div>
-        <div class="phone phone-front">
-          <img src="assets/app-painel.png" alt="Painel real do LouvePlan: Ensaio, Músicas, Escalas, Repertórios e Membros" />
+      <div class="hero-visual">
+        <figure class="browser">
+          <div class="browser-chrome">
+            <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <div class="browser-url">app.louveplan.com.br/painel</div>
+            <div class="theme-switch" role="tablist" aria-label="Tema do painel">
+              <button type="button" class="is-on" data-hero-theme="light">Claro</button>
+              <button type="button" data-hero-theme="dark">Escuro</button>
+            </div>
+          </div>
+          <div class="browser-screen">
+            <img id="hero-shot" src="assets/web-painel.png?v=1" alt="Painel web do LouvePlan no tema claro: semana do louvor, busca e player do YouTube" />
+          </div>
+        </figure>
+        <div class="phone phone-side">
+          <img src="assets/app-painel.png" alt="O mesmo ministério no celular: Ensaio, Músicas, Escalas e Membros" />
+          <p>Também no celular</p>
         </div>
       </div>
     </section>
 
     <div class="wrap strip">
-      <span><b>Um app.</b> toda a operação do ministério.</span>
+      <span><b>Um painel.</b> toda a operação do ministério.</span>
       <span><b>Escala + setlist</b> no mesmo evento.</span>
       <span><b>RSVP</b> pra ninguém chegar no escuro.</span>
     </div>
@@ -94,52 +105,61 @@
     </section>
 
     <section class="wrap section" id="funcoes">
-      <p class="eyebrow">O que o ministério precisa</p>
-      <h2>Quatro portas. Zero planilha.</h2>
-      <p class="sub">A mesma grade do app: músicas, escalas, repertórios e membros. O resto vive dentro do evento.</p>
-      <div class="mosaic">
-        <article class="tile span">
-          <p class="eyebrow">Evento</p>
-          <h3>O domingo inteiro numa tela.</h3>
-          <p>Horário, setlist, quem toca, quem confirmou. Playlist e arquivo entram só quando existem.</p>
-          <div class="fake-list">
-            <div class="row"><span>Escala publicada</span><i class="dot"></i></div>
-            <div class="row"><span>4 músicas no set</span><i class="dot"></i></div>
-            <div class="row"><span>8 de 10 no RSVP</span><i class="dot"></i></div>
+      <p class="eyebrow">O painel do ministério</p>
+      <h2>A semana do louvor no computador.</h2>
+      <p class="sub">Painel, agenda, músicas, escalas, membros e o evento — setlist, RSVP e repertório no mesmo lugar. O celular continua com você no ensaio.</p>
+
+      <div class="gallery">
+        <div class="gallery-tabs" role="tablist" aria-label="Telas do painel">
+          <button type="button" class="is-on" role="tab" aria-selected="true" data-shot="assets/web-painel.png?v=1" data-caption="Painel — semana, busca e player do YouTube">Painel</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="assets/web-agenda.png?v=1" data-caption="Agenda — cultos, ensaios e indisponibilidade">Agenda</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="assets/web-painel-player.png?v=1" data-caption="Músicas — setlist e player no Painel (YouTube primeiro)">Músicas</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="assets/web-evento.png?v=1" data-caption="Evento — escala, setlist e RSVP">Escalas</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="assets/web-membros.png?v=1" data-caption="Membros — papéis, convite e presença">Membros</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="assets/web-evento.png?v=1" data-caption="Evento — repertório, playlists e confirmação">Evento</button>
+        </div>
+        <figure class="browser gallery-frame">
+          <div class="browser-chrome">
+            <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <div class="browser-url">app.louveplan.com.br</div>
           </div>
-          <div class="orb"></div>
-        </article>
-        <article class="tile">
-          <p class="eyebrow">Músicas</p>
-          <h3>Catálogo da igreja.</h3>
-          <p>Busca no acervo LouvePlan, capas, tom e o que já foi cantado.</p>
-        </article>
-        <article class="tile">
-          <p class="eyebrow">Pessoas</p>
-          <h3>Membros no ritmo certo.</h3>
-          <p>Papéis, indisponibilidade e presença. Sem grupo de WhatsApp eterno.</p>
-        </article>
+          <div class="browser-screen">
+            <img id="gallery-shot" src="assets/web-painel.png?v=1" alt="Painel — semana, busca e player do YouTube" />
+          </div>
+        </figure>
+        <p class="gallery-caption" id="gallery-caption">Painel — semana, busca e player do YouTube</p>
       </div>
-      <div class="grid4">
-        <article class="card">
-          <div class="icon">♪</div>
-          <h3>Músicas</h3>
-          <p>Biblioteca da casa, busca e capas. O repertório para de viver no Drive.</p>
-        </article>
+
+      <div class="grid6">
         <article class="card">
           <div class="icon">▣</div>
-          <h3>Escalas</h3>
-          <p>Monte o time do culto e publique quando estiver redondo.</p>
+          <h3>Painel</h3>
+          <p>A semana do louvor, o player e o que ainda falta confirmar. Claro ou escuro.</p>
         </article>
         <article class="card">
           <div class="icon">☰</div>
-          <h3>Repertórios</h3>
-          <p>Setlist do evento, ordem das músicas, tom de cada uma.</p>
+          <h3>Agenda</h3>
+          <p>Cultos, ensaios e indisponibilidade. O ministério vê o calendário, não o grupo.</p>
+        </article>
+        <article class="card">
+          <div class="icon">♪</div>
+          <h3>Músicas</h3>
+          <p>Biblioteca da casa, busca e capas. O setlist e o player do Painel carregam o que vai tocar.</p>
+        </article>
+        <article class="card">
+          <div class="icon">☑</div>
+          <h3>Escalas</h3>
+          <p>Monte o time do culto e publique quando estiver redondo. O RSVP mora no evento.</p>
         </article>
         <article class="card">
           <div class="icon">☺</div>
           <h3>Membros</h3>
-          <p>Quem canta, quem toca, quem não pode nesse domingo.</p>
+          <p>Quem canta, quem toca, quem não pode nesse domingo. Convite com função certa.</p>
+        </article>
+        <article class="card">
+          <div class="icon">◎</div>
+          <h3>Evento</h3>
+          <p>Horário, setlist, escala e quem confirmou. Playlist e arquivo entram só quando existem.</p>
         </article>
       </div>
     </section>
@@ -156,7 +176,7 @@
         <article class="step">
           <div class="num">02</div>
           <h3>A escala da semana</h3>
-          <p>Escolhe o evento, monta o set, chama quem vai subir. O time confirma no app.</p>
+          <p>Escolhe o evento, monta o set, chama quem vai subir. O time confirma no painel ou no celular.</p>
         </article>
         <article class="step">
           <div class="num">03</div>
@@ -316,6 +336,33 @@
     const m = document.getElementById('menu');
     b.addEventListener('click', () => m.classList.toggle('open'));
     m.querySelectorAll('a').forEach(a => a.addEventListener('click', () => m.classList.remove('open')));
+
+    const heroShot = document.getElementById('hero-shot');
+    document.querySelectorAll('[data-hero-theme]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-hero-theme]').forEach((el) => el.classList.toggle('is-on', el === btn));
+        const dark = btn.dataset.heroTheme === 'dark';
+        heroShot.src = dark ? 'assets/web-painel-dark.png?v=1' : 'assets/web-painel.png?v=1';
+        heroShot.alt = dark
+          ? 'Painel web do LouvePlan no tema escuro: semana do louvor, busca e player do YouTube'
+          : 'Painel web do LouvePlan no tema claro: semana do louvor, busca e player do YouTube';
+      });
+    });
+
+    const galleryShot = document.getElementById('gallery-shot');
+    const galleryCaption = document.getElementById('gallery-caption');
+    document.querySelectorAll('.gallery-tabs [data-shot]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gallery-tabs [data-shot]').forEach((el) => {
+          const on = el === btn;
+          el.classList.toggle('is-on', on);
+          el.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        galleryShot.src = btn.dataset.shot;
+        galleryShot.alt = btn.dataset.caption;
+        galleryCaption.textContent = btn.dataset.caption;
+      });
+    });
   </script>
   <script src="js/waitlist.js?v=5" defer></script>
 </body>
