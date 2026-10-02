@@ -354,6 +354,14 @@ overlay.querySelectorAll('[data-waitlist-retry]').forEach((el) => {
 copyBtn.addEventListener('click', copyPix);
 form.addEventListener('submit', submitWaitlist);
 
+form.addEventListener('input', (event) => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement) || !input.name) return;
+  input.removeAttribute('aria-invalid');
+  const err = form.querySelector(`[data-error="${input.name}"]`);
+  if (err) err.textContent = '';
+});
+
 field('phone').addEventListener('input', () => {
   const phone = field('phone');
   const caretAtEnd = phone.selectionStart === phone.value.length;
