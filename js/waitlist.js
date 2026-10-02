@@ -1,19 +1,42 @@
 /**
- * CTA Garantir acesso — formulário curto e WhatsApp de vendas. Sem PIX.
+ * Lista de espera — contrato Otto (COD-19), PIX na landing. Sem cartão, sem redirect.
  *
- * wa.me/5561985507287 com nome, e-mail, telefone e a linha de interesse.
+ * Otto: altere só WAITLIST_API_BASE se o host mudar.
+ * Fallback local: http://127.0.0.1:8000
+ *
+ * POST {base}/api/v1/waitlist  JSON { name, email, phone }  phone dígitos 11999999999
+ *   201 created e 200 pending-reuse — mesmo envelope data.{ id, status, amount, payment }
+ *   409 { message, code: "waitlist_already_joined" }
+ *   422 erros de validação
+ * GET  {base}/api/v1/waitlist/{data.id}  até data.status === "paid" (payment pode ser null)
  */
-const SALES_WHATSAPP = '5561985507287';
-const INTEREST_LINE = 'Tenho interesse em organizar minha equipe.';
+const WAITLIST_API_BASE = 'https://api.louveplan.com.br';
+const WAITLIST_PATH = '/api/v1/waitlist';
+const WAITLIST_POLL_MS = 3000;
 
 const overlay = document.getElementById('waitlist');
 const sheet = overlay.querySelector('.waitlist-sheet');
 const form = document.getElementById('waitlist-form');
+const qrImg = document.getElementById('waitlist-qr');
+const brInput = document.getElementById('waitlist-brcode');
+const copyBtn = document.getElementById('waitlist-copy');
+const pollStatusEl = document.getElementById('waitlist-poll');
+const submitBtn = document.getElementById('waitlist-submit');
+const joinedCopy = document.getElementById('waitlist-joined-copy');
 const formBanner = document.getElementById('waitlist-form-error');
-const reopenBtn = document.getElementById('waitlist-reopen');
+const errorDetail = document.getElementById('waitlist-error-detail');
 
 let lastOpener = null;
-let lastWhatsAppUrl = '';
+let pollTimer = null;
+let pollAbort = null;
+let creating = false;
+
+function waitlistUrl(id) {
+  const base = WAITLIST_API_BASE.replace(/\/$/, '');
+  return id
+    ? `${base}${WAITLIST_PATH}/${encodeURIComponent(id)}`
+    : `${base}${WAITLIST_PATH}`;
+}
 
 function isCoarseOrNarrow() {
   return window.matchMedia('(pointer: coarse)').matches
@@ -49,18 +72,49 @@ function getFocusable() {
 
 function openWaitlist(opener) {
   lastOpener = opener || document.activeElement;
+  stopPoll();
   form.reset();
   clearFieldErrors();
-  lastWhatsAppUrl = '';
+  syncSubmitBusy();
   overlay.hidden = false;
   document.body.classList.add('waitlist-lock');
-  showStep('form');
+  showStep('price');
 }
 
 function closeWaitlist() {
+  stopPoll();
   overlay.hidden = true;
   document.body.classList.remove('waitlist-lock');
   if (lastOpener && typeof lastOpener.focus === 'function') lastOpener.focus();
+}
+
+function stopPoll() {
+  if (pollTimer) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+  if (pollAbort) {
+    pollAbort.abort();
+    pollAbort = null;
+  }
+}
+
+function syncSubmitBusy() {
+  submitBtn.disabled = creating;
+  submitBtn.textContent = creating ? 'Aguarde…' : 'Pagar R$ 4,90';
+}
+
+function showError(status, json, networkFallback) {
+  const msg = json && json.message ? String(json.message).trim() : '';
+  let text = '';
+  if (status) {
+    text = `HTTP ${status}`;
+    text += msg ? ` — ${msg}` : ' — Sem detalhes do servidor.';
+  } else {
+    text = networkFallback || 'Falha de conexão. Tente de novo.';
+  }
+  if (errorDetail) errorDetail.textContent = text;
+  showStep('error');
 }
 
 function clearFieldErrors() {
@@ -125,38 +179,153 @@ function validateForm() {
   return ok;
 }
 
-function buildWhatsAppUrl({ name, email, phone, church }) {
-  const parts = [
-    `Olá! Meu nome é ${name}.`,
-    `E-mail: ${email}.`,
-    `Telefone: ${phone}.`,
-  ];
-  if (church) parts.push(`Igreja: ${church}.`);
-  parts.push(INTEREST_LINE);
-  return `https://wa.me/${SALES_WHATSAPP}?text=${encodeURIComponent(parts.join(' '))}`;
-}
-
-function openWhatsApp(url) {
-  lastWhatsAppUrl = url;
-  const opened = window.open(url, '_blank', 'noopener,noreferrer');
-  if (!opened) {
-    window.location.assign(url);
-    return false;
+function applyApiValidation(json) {
+  clearFieldErrors();
+  const errors = json && json.errors && typeof json.errors === 'object' ? json.errors : {};
+  let mapped = false;
+  ['name', 'email', 'phone'].forEach((key) => {
+    const item = errors[key];
+    const msg = Array.isArray(item) ? item[0] : item;
+    if (msg) {
+      setFieldError(key, String(msg));
+      mapped = true;
+    }
+  });
+  if (!mapped && formBanner) {
+    formBanner.hidden = false;
+    formBanner.textContent = json && json.message
+      ? String(json.message)
+      : 'Confira os dados e tente de novo.';
   }
-  return true;
 }
 
-function submitWaitlist(event) {
+/** Só o envelope travado: json.data.{ id, status, payment.br_code, payment.br_code_base64 }. */
+function readWaitlist(json) {
+  const data = json && json.data && typeof json.data === 'object' ? json.data : null;
+  if (!data) return { id: '', status: '', brCode: '', qrSrc: '' };
+  const payment = data.payment && typeof data.payment === 'object' ? data.payment : null;
+  return {
+    id: data.id ? String(data.id) : '',
+    status: data.status ? String(data.status) : '',
+    brCode: payment && payment.br_code ? String(payment.br_code) : '',
+    qrSrc: payment && payment.br_code_base64 ? String(payment.br_code_base64) : '',
+  };
+}
+
+function showPix(entry) {
+  const hasQr = Boolean(entry.qrSrc);
+  qrImg.hidden = !hasQr;
+  if (hasQr) qrImg.src = entry.qrSrc;
+  else qrImg.removeAttribute('src');
+  brInput.value = entry.brCode;
+  copyBtn.disabled = !entry.brCode;
+  pollStatusEl.textContent = 'Aguardando o PIX… sem ele, você espera a loja.';
+  showStep('pix');
+  if (entry.id) startPoll(entry.id);
+}
+
+function startPoll(id) {
+  stopPoll();
+  const tick = async () => {
+    pollAbort = new AbortController();
+    try {
+      const res = await fetch(waitlistUrl(id), {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        signal: pollAbort.signal,
+      });
+      if (res.ok) {
+        const json = await res.json().catch(() => ({}));
+        if (readWaitlist(json).status === 'paid') {
+          stopPoll();
+          showStep('success');
+          return;
+        }
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+    pollTimer = setTimeout(tick, WAITLIST_POLL_MS);
+  };
+  tick();
+}
+
+function showJoined(json) {
+  if (joinedCopy) {
+    joinedCopy.textContent = json && json.message
+      ? String(json.message)
+      : 'Este e-mail já está na lista de espera.';
+  }
+  showStep('joined');
+}
+
+async function submitWaitlist(event) {
   event.preventDefault();
+  if (creating) return;
   if (!validateForm()) return;
 
-  const name = field('name').value.trim();
-  const email = field('email').value.trim();
-  const phone = formatPhone(field('phone').value);
-  const church = field('church') ? field('church').value.trim() : '';
-  const url = buildWhatsAppUrl({ name, email, phone, church });
+  creating = true;
+  syncSubmitBusy();
 
-  if (openWhatsApp(url)) showStep('sent');
+  const body = {
+    name: field('name').value.trim(),
+    email: field('email').value.trim(),
+    phone: digits(field('phone').value),
+  };
+
+  try {
+    const res = await fetch(waitlistUrl(), {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const json = await res.json().catch(() => ({}));
+
+    if (res.status === 422) {
+      applyApiValidation(json);
+      showStep('form');
+      return;
+    }
+
+    if (res.status === 409) {
+      showJoined(json);
+      return;
+    }
+
+    if (res.status === 200 || res.status === 201) {
+      const entry = readWaitlist(json);
+      // Copia-e-cola basta; não exigir br_code_base64 / QR.
+      if (entry.id && entry.brCode) {
+        showPix(entry);
+        return;
+      }
+    }
+
+    showError(res.status, json);
+  } catch {
+    showError(0, null, 'Falha de conexão. Tente de novo.');
+  } finally {
+    creating = false;
+    syncSubmitBusy();
+  }
+}
+
+async function copyPix() {
+  const code = brInput.value.trim();
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    copyBtn.textContent = 'Copiado';
+    setTimeout(() => {
+      copyBtn.textContent = 'Copiar';
+    }, 1600);
+  } catch {
+    brInput.select();
+  }
 }
 
 document.querySelectorAll('[data-waitlist-open]').forEach((el) => {
@@ -174,12 +343,15 @@ overlay.querySelectorAll('[data-waitlist-close]').forEach((el) => {
   el.addEventListener('click', closeWaitlist);
 });
 
-if (reopenBtn) {
-  reopenBtn.addEventListener('click', () => {
-    if (lastWhatsAppUrl) openWhatsApp(lastWhatsAppUrl);
-  });
-}
+overlay.querySelector('[data-waitlist-next]').addEventListener('click', () => {
+  showStep('form');
+});
 
+overlay.querySelectorAll('[data-waitlist-retry]').forEach((el) => {
+  el.addEventListener('click', () => showStep('form'));
+});
+
+copyBtn.addEventListener('click', copyPix);
 form.addEventListener('submit', submitWaitlist);
 
 form.addEventListener('input', (event) => {
